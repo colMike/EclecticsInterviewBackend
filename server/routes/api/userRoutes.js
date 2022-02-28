@@ -32,17 +32,17 @@ module.exports = (app) => {
 		const { password } = body;
 
 		console.log(email);
-		console.log(user.username);
+		console.log(user.userName);
 
 		console.log(email);
-		console.log(user.username);
+		console.log(user.userName);
 
-		console.log(email === user.username && password === user.password);
+		console.log(email === user.userName && password === user.password);
 
-		let userBeingChecked = user.find((user) => user.username == email);
+		let userBeingChecked = user.find((user) => user.userName == email || user.email == email);
 
-		//checking to make sure the user entered the correct username/password combo
-		if (email === userBeingChecked.username && password === userBeingChecked.password) {
+		//checking to make sure the user entered the correct userName/password combo
+		if (email === userBeingChecked.userName && password === userBeingChecked.password) {
 			//if user log in success, generate a JWT token for the user with a secret key
 			console.log('email and password are correct::::::Signing jwt token');
 			jwt.sign({ user: userBeingChecked }, 'privatekey', { expiresIn: '1h' }, (err, token) => {
@@ -61,7 +61,7 @@ module.exports = (app) => {
 	});
 
 	//This is a protected route
-	app.get('/user/orders', checkToken, (req, res) => {
+	app.get('/user/loans', checkToken, (req, res) => {
 		//verify the JWT token generated for the user
 		jwt.verify(req.token, 'privatekey', (err, authorizedData) => {
 			if (err) {
@@ -73,7 +73,7 @@ module.exports = (app) => {
 				res.json({
 					message        : 'Properly Authenticated with JWT',
 					authorizedData,
-					orders         : [ 1, 2, 3 ]
+					loans          : [ 1, 2, 3 ]
 				});
 				console.log('SUCCESS: Connected to protected route');
 			}
